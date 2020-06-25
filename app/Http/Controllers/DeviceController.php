@@ -140,9 +140,11 @@ class DeviceController extends Controller
                                 })
                                 ->addColumn('action', function($data){
                                     $action = '<a
-                                    href="configuration/'.$data->device_id.'"
+                                    href="javascript:void(0)"
                                     data-toggle="tooltip"
                                     title="Device Configuration"
+                                    data-device-id="'.$data->device_id.'"
+                                    class="config_device"
                                     ><i
                                         class="fa fa-cog"
                                         aria-hidden="true"
@@ -204,6 +206,95 @@ class DeviceController extends Controller
     {
         $deviceDetails = Device::getDeviceConfigOnId($id);
         return view('deviceConfig', compact('devices'));
+    }
+
+    public function getConfigDevice(Request $request)
+    {
+        $id = $request->get('id', '');
+        $deviceDetails = Device::getDeviceConfigOnId($id);
+        if($deviceDetails) {
+            $output = $deviceDetails;
+        } else {
+            $output = '';
+        }
+
+        echo json_encode($output);
+    }
+
+    public function updateDeviceConfig(Request $request) 
+    {
+        //print_r($request->all());die;
+
+        $postData =  $request->all();
+        $emptyFlag = true;
+        $mismatchFlag = false;
+        $incorrectFlag = false;
+        $success_output = '';
+        $error_output = '';
+        
+        for($i=0; $i < 16; $i++) {
+            if(($postData['charging'][$i] && !$postData['discharging'][$i]) || (!$postData['charging'][$i] && $postData['charging'][$i])) {
+                $mismatchFlag = true;
+            } 
+            if($postData['charging'][$i] != '' && $emptyFlag) {
+                $emptyFlag = false;
+            }
+            if(($postData['charging'][$i] != '' && !is_numeric($postData['charging'][$i]) && !is_float($postData['charging'][$i])) || ($postData['discharging'][$i] != '' && !is_numeric($postData['discharging'][$i]) && !is_float($postData['discharging'][$i]))) {
+                //echo $i;
+                $incorrectFlag = true;
+            }
+        }
+
+
+        if($emptyFlag) {
+            $error_output = '<div class="alert alert-danger">All battery config can not be empty.</div>';
+            $output = array(
+                'error'     =>  $error_output,
+                'success'   =>  $success_output
+            );
+            echo json_encode($output);
+            return; 
+        }
+
+        if($mismatchFlag) {
+            $error_output = '<div class="alert alert-danger">Please check that for any battery, either charging and discharging should be filled or both should be empty.</div>';
+            $output = array(
+                'error'     =>  $error_output,
+                'success'   =>  $success_output
+            );
+            echo json_encode($output);
+            return; 
+        }
+
+        if($incorrectFlag) {
+            $error_output = '<div class="alert alert-danger">All values should be either integer or floating numbers.</div>';
+            $output = array(
+                'error'     =>  $error_output,
+                'success'   =>  $success_output
+            );
+            echo json_encode($output);
+            return; 
+        }
+
+        $updateDevices = Device::updateDeviceConfigDetails($postData);
+        
+        if($updateDevices) {
+            $success_output = '<div class="alert alert-success">Configuration saved successfully.</div>';
+            $output = array(
+                'error'     =>  $error_output,
+                'success'   =>  $success_output
+            );
+            echo json_encode($output);
+            return; 
+        } else {
+            $error_output = '<div class="alert alert-danger">Could not save configuration. Please try again.</div>';
+            $output = array(
+                'error'     =>  $error_output,
+                'success'   =>  $success_output
+            );
+            echo json_encode($output);
+            return; 
+        }
     }
 
 

@@ -411,6 +411,138 @@
     </div>
 </div>
 
+<!-- device configuration modal starts -->
+<div
+    class="modal fade"
+    id="configDeviceModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="configModalLabel"
+    aria-hidden="true"
+>
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="configModalLabel">
+                    Device Configuration
+                </h5>
+                <!-- <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                >
+                    <span aria-hidden="true">&times;</span>
+                </button> -->
+            </div>
+            <div class="modal-body">
+                <div
+                    id="loadingConfig"
+                    style="
+                        display: block;
+                        text-align: center;
+                        margin-top: 30px;
+                        margin-bottom: 30px;
+                    "
+                >
+                    <img src="../assets/img/loader.gif" style="width: 30px;" />
+                </div>
+                <div
+                    id="config-loading"
+                    style="
+                        display: none;
+                        position: fixed;
+                        top: 40%;
+                        left: 50%;
+                        width: 100%;
+                        height: 100%;
+                        z-index: 2;
+                    "
+                >
+                    <img src="../assets/img/loader.gif" style="width: 40px;" />
+                </div>
+                <div
+                    id="ajax-errorConfig"
+                    style="
+                        display: none;
+                        text-align: center;
+                        margin-top: 30px;
+                        margin-bottom: 30px;
+                    "
+                ></div>
+            <form name="config_device"
+                        method="POST"
+                        id="config_device">
+                        @csrf
+                    <span id="form_outputConfig"></span>
+                <div id="form-sectionConfig" style="display: none;">
+                    <div style="margin-bottom: 20px;">
+                        <div class="device-config-container">
+                        <?php
+                            for($i = 1; $i <= 16; $i++) {
+                        ?>
+                
+                            <div class="col-md-3" style="padding:5px">
+                                <div class="config-card">
+                                    <div style="text-align: center;font-weight: bold">Battery # {{$i}}</div>
+                                    <hr style="margin-top: 5px;margin-bottom: 10px;" />
+                
+                                    <div class="form-group config-group">
+                                        <label class="config-label" for="charging_{{$i}}">Charging Thrashold</label>
+                                        <input type="text" name="charging[]" class="form-control config-control" id="charging_{{$i}}"
+                                            placeholder="">
+                                    </div>
+                
+                                    <div class="form-group config-group">
+                                        <label class="config-label" for="discharging_{{$i}}">Discharging Thrashold</label>
+                                        <input type="text" name="discharging[]" class="form-control config-control" id="discharging_{{$i}}"
+                                            placeholder="">
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                
+                        <?php
+                                if($i%4 === 0) {
+                        ?>
+                                </div>
+                                <div class="device-config-container">
+                        <?php
+                                }
+                            }
+                        ?>
+                        </div>
+                        <input type="hidden" name="device_id" id="device_id_config">
+                        <div class="form-group row">
+                            <div
+                                class="col-sm-12"
+                                style="text-align: center; margin-top: 30px;"
+                            >
+                            <button
+                                type="button"
+                                class="btn btn-secondary"
+                                data-dismiss="modal"
+                            >
+                                Close
+                            </button>
+                                <button
+                                    type="submit"
+                                    class="btn btn-primary"
+                                >
+                                    Save Device Configuration
+                                </button>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection @section('extra-scripts')
 <script src="{{
         asset('assets/vendor/datatables/jquery.dataTables.min.js')
@@ -452,7 +584,7 @@
             var form_data = $(this).serialize();
             $.ajax({
                 url: "{{ route('edit-device') }}",
-                method: "GET",
+                method: "POST",
                 data: form_data,
                 dataType: "json",
                 success: function (data) {
@@ -469,14 +601,16 @@
                                 data.error[count] +
                                 "</div>";
                         }
+                        $("#editDeviceModal").scrollTop(0);
                         $("#form_output").html(error_html);
                     } else {
+                        $("#editDeviceModal").scrollTop(0);
                         $("#form_output").html(data.success);
                         dt.ajax.reload();
                         setTimeout(() => {
                             $("#form_output").html("");
                             $("#editDeviceModal").modal("hide");
-                        }, 1000);
+                        }, 3000);
                     }
                 },
                 error: function (err) {
@@ -487,6 +621,39 @@
                 },
             });
         });
+
+        $("#config_device").on("submit", function (event) {
+            $("#config-loading").show();
+            event.preventDefault();
+            var form_data = $(this).serialize();
+            $.ajax({
+                url: "{{ route('update-config-device') }}",
+                method: "POST",
+                data: form_data,
+                dataType: "json",
+                success: function (data) {
+                    $("#config-loading").hide();
+                    if (data.error) {
+                        $("#configDeviceModal").scrollTop(0);
+                        $("#form_outputConfig").html(data.error);
+                    } else {
+                        $("#configDeviceModal").scrollTop(0);
+                        $("#form_outputConfig").html(data.success);
+                        setTimeout(() => {
+                            $("#form_outputConfig").html("");
+                            $("#configDeviceModal").modal("hide");
+                        }, 3000);
+                    }
+                },
+                error: function (err) {
+                    $("#config-loading").hide();
+                    var error_html =
+                        '<div class="alert alert-danger">Something went wrong. Please try again.</div>';
+                    $("#form_outputConfig").html(error_html);
+                },
+            });
+        });
+        
 
         $(document).on("click", ".edit_status", function () {
             var id = $(this).attr("data-device-id");
@@ -576,6 +743,46 @@
             error: function (err) {
                 $("#ajax-error").text("Something went wrong. Please try again");
                 $("#ajax-error").show();
+            },
+        });
+    });
+
+    $(document).on("click", ".config_device", function () {
+        $("#ajax-errorView").hide();
+        var id = $(this).attr("data-device-id");
+        console.log(id);
+        $("#configDeviceModal").modal({
+            backdrop: "static",
+            keyboard: false,
+        });
+        $.ajax({
+            url: "{{route('config-device')}}",
+            method: "get",
+            data: { id: id },
+            dataType: "json",
+            success: function (data) {
+                $("#loadingConfig").hide();
+                $("#form-sectionConfig").show();
+                if (data) {
+                    if(data.length) {
+                        console.log(data);
+                        for(var i = 0; i < 16;i++) {
+                            var cid = i+1;
+                            $("#charging_"+cid).val(data[i].charging_thrashold);
+                            $('#discharging_'+cid).val(data[i].discharge_thrashold);
+                            $('#device_id_config').val(id);
+                        }
+                    } else {
+                        $('#device_id_config').val(id);
+                    }
+                } else {
+                    $("#ajax-errorConfig").text("No data found for the device you searched");
+                    $("#ajax-errorConfig").show();
+                }
+            },
+            error: function (err) {
+                $("#ajax-errorConfig").text("Something went wrong. Please try again");
+                $("#ajax-errorConfig").show();
             },
         });
     });

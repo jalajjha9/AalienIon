@@ -23,7 +23,9 @@ Route::get('/device/onboarding', 'DeviceController@onboarding')->name('device-on
 
 Route::post('/device/onboarding', 'DeviceController@addDevice')->name('add-device');
 
-Route::post('/device/update', 'DeviceController@editDevice')->name('edit-device');
+Route::post('/device/editDevice', 'DeviceController@editDevice')->name('edit-device');
+Route::post('/device/updateDeviceConfig', 'DeviceController@updateDeviceConfig')->name('update-config-device');
+
 
 Route::get('/device/list', 'DeviceController@index')->name('device-manage');
 
@@ -31,6 +33,9 @@ Route::get('/device/getDevice', 'DeviceController@getDevice')->name('get-device'
 Route::get('/device/getAllDevices', 'DeviceController@getAllDevices')->name('get-all-devices');
 Route::get('/device/editDeviceStatus', 'DeviceController@editDeviceStatus')->name('edit-device-status');
 Route::get('/device/configuration/{id}', 'DeviceController@configuration')->name('configuration');
+Route::get('/device/getConfigDevice', 'DeviceController@getConfigDevice')->name('config-device');
+
+
 
 
 
