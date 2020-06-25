@@ -1,0 +1,170 @@
+.login-body {
+    margin: 0px;
+    background: url(../img/login-bg.jpg) no-repeat 0px 0px;
+    background-size: cover;
+    font-family: 'Raleway', sans-serif;
+}
+
+.login-wrapper {
+    text-align: center;
+}
+
+.company-logo {
+    width: 200px;
+}
+
+.login-box {
+    background: rgba(0, 0, 0, 0.4117647058823529);
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 1em 3em;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+.login-text {
+    margin: 0;
+    color: #fc3955;
+    font-size: 25px;
+    font-weight: 400;
+    text-align: center;
+    letter-spacing: 1px;
+    padding-bottom: 30px;
+}
+
+.login-input-section {
+    margin: 20px 0;
+    text-align: left
+}
+
+.login-input-label {
+    display: block;
+    text-transform: uppercase;
+    font-size: 13px;
+    color: #d2d2d2 !important;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    font-style: italic;
+}
+
+.login-inputbox-section {
+    display: flex;
+    padding: 1px 5px;
+    background-color: #ffffff;
+}
+
+.login-input-icon {
+    color: #fc3955;
+    font-size: 17px;
+    padding: 12px 10px;
+}
+
+.login-input {
+    width: 100%;
+    border: none;
+    box-sizing: border-box;
+    background: transparent;
+    background-image: none !important;
+    color: #000;
+}
+
+.login-submit {
+    background: #fc3955;
+    color: #ffffff;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: none;
+    padding: 8px 60px;
+    margin-bottom: 10px;
+    margin-top: 0px;
+    cursor: pointer;
+    width: 100%;
+    border-radius: 6px;
+}
+
+.invalid-feedback {
+    display: block !important;
+}
+
+.login-forgot {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0 5px 0;
+}
+
+.custom-logo-text {
+    color: #333333 !important;
+    font-weight: bold !important;
+    font-size: 20px !important;
+}
+
+.custom-nav-link {
+    padding-left: 26px !important;
+}
+
+.btn-primary {
+    background-color: #F44336;
+    border-color: #F44336;
+}
+
+.form-control::-webkit-input-placeholder {
+    color: #dcdcdc;
+}
+
+/* WebKit, Blink, Edge */
+.form-control:-moz-placeholder {
+    color: #dcdcdc;
+}
+
+/* Mozilla Firefox 4 to 18 */
+.form-control::-moz-placeholder {
+    color: #dcdcdc;
+}
+
+/* Mozilla Firefox 19+ */
+.form-control:-ms-input-placeholder {
+    color: #dcdcdc;
+}
+
+/* Internet Explorer 10-11 */
+.form-control::-ms-input-placeholder {
+    color: #dcdcdc;
+}
+
+/* Microsoft Edge */
+
+
+.alert {
+    position: relative;
+    padding: .75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: .25rem;
+}
+
+.alert-danger {
+    color: #721c24 !important;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.alert-success {
+    color: #155724 !important;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.error-star {
+    color: red;
+    font-size: 12px;
+    vertical-align: top;
+}
+
+.table {
+    color: #424040;
+}
+
+#dataTableHover tbody {
+    font-size: 14px !important;
+}
