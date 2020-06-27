@@ -202,10 +202,9 @@ class DeviceController extends Controller
         $device->save();
     }
 
-    public function configuration($id) 
+    public function configuration() 
     {
-        $deviceDetails = Device::getDeviceConfigOnId($id);
-        return view('deviceConfig', compact('devices'));
+        return view('deviceConfig');
     }
 
     public function getConfigDevice(Request $request)
@@ -257,7 +256,7 @@ class DeviceController extends Controller
         }
 
         if($mismatchFlag) {
-            $error_output = '<div class="alert alert-danger">Please check that for any battery, either charging and discharging should be filled or both should be empty.</div>';
+            $error_output = '<div class="alert alert-danger">Please check that, for any battery, either charging and discharging should be filled or both should be empty.</div>';
             $output = array(
                 'error'     =>  $error_output,
                 'success'   =>  $success_output
@@ -278,7 +277,7 @@ class DeviceController extends Controller
 
         $updateDevices = Device::updateDeviceConfigDetails($postData);
         
-        if($updateDevices) {
+        if($updateDevices['status']) {
             $success_output = '<div class="alert alert-success">Configuration saved successfully.</div>';
             $output = array(
                 'error'     =>  $error_output,
@@ -287,7 +286,7 @@ class DeviceController extends Controller
             echo json_encode($output);
             return; 
         } else {
-            $error_output = '<div class="alert alert-danger">Could not save configuration. Please try again.</div>';
+            $error_output = '<div class="alert alert-danger">'.$updateDevices['msg'].'</div>';
             $output = array(
                 'error'     =>  $error_output,
                 'success'   =>  $success_output

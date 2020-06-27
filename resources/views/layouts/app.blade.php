@@ -82,6 +82,14 @@
                         ></i>
                         <span>Manage Devices</span></a>
                 </li>
+                <li class="nav-item active">
+                    <a class="nav-link custom-nav-link" href="{{ route('configuration') }}">
+                        <i
+                            class="fas fa-fw fa-database"
+                            style="color: #29B6F6; font-size: 1rem;"
+                        ></i>
+                        <span>Device Configuration</span></a>
+                </li>
             </ul>
             <!-- Sidebar -->
             <div id="content-wrapper" class="d-flex flex-column">

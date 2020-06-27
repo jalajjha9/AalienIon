@@ -16,3 +16,7 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('device/info/{id}', array('middleware' => 'cors', 'uses' => 'DeviceApiController@getDeviceOnId'));
+
+Route::post('device/monitoring', array('middleware' => 'cors', 'uses' => 'DeviceApiController@postDeviceMonitoring'));

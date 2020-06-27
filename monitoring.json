@@ -1,0 +1,36 @@
+{
+    "device_id": 1234567891,
+    "battery_pack_temp": 123,
+    "battery_pack_voltage": 123,
+    "battery_details": [{
+            "battery_no": 1,
+            "battery_voltage": 4.2,
+            "charge_status": 4.2,
+            "discharge_status": 3.2
+        },
+        {
+            "battery_no": 5,
+            "battery_voltage": 4.2,
+            "charge_status": 4.2,
+            "discharge_status": 3.2
+        },
+        {
+            "battery_no": 8,
+            "battery_voltage": 4.2,
+            "charge_status": 4.2,
+            "discharge_status": 3.2
+        },
+        {
+            "battery_no": 12,
+            "battery_voltage": 4.2,
+            "charge_status": 4.2,
+            "discharge_status": 3.2
+        },
+        {
+            "battery_no": 15,
+            "battery_voltage": 4.2,
+            "charge_status": 4.2,
+            "discharge_status": 3.2
+        }
+    ]
+}
