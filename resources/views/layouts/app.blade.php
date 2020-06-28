@@ -105,6 +105,8 @@
                             <i class="fa fa-bars"></i>
                         </button>
                         <ul class="navbar-nav ml-auto">
+
+                        @if(Route::current()->getName() == 'home')
                             <li class="nav-item dropdown no-arrow">
                                 <a
                                     class="nav-link dropdown-toggle"
@@ -145,6 +147,7 @@
                                     </form>
                                 </div>
                             </li>
+                        @endif
                             <li class="nav-item dropdown no-arrow mx-1">
                                 <a
                                     class="nav-link dropdown-toggle"

@@ -750,7 +750,6 @@
     $(document).on("click", ".config_device", function () {
         $("#ajax-errorView").hide();
         var id = $(this).attr("data-device-id");
-        console.log(id);
         $("#configDeviceModal").modal({
             backdrop: "static",
             keyboard: false,
@@ -765,14 +764,18 @@
                 $("#form-sectionConfig").show();
                 if (data) {
                     if(data.length) {
-                        console.log(data);
                         for(var i = 0; i < 16;i++) {
                             var cid = i+1;
                             $("#charging_"+cid).val(data[i].charging_thrashold);
                             $('#discharging_'+cid).val(data[i].discharge_thrashold);
-                            $('#device_id_config').val(id);
                         }
+                        $('#device_id_config').val(id);
                     } else {
+                        for(var i = 0; i < 16;i++) {
+                            var cid = i+1;
+                            $("#charging_"+cid).val('');
+                            $('#discharging_'+cid).val('');
+                        }
                         $('#device_id_config').val(id);
                     }
                 } else {

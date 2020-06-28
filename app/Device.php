@@ -91,15 +91,15 @@ class Device extends Model {
 
         $batteryCount = 0;
         $configData = DB::table('device_config')->where(['device_id' => $data['device_id']])->orderBy('battery_number', 'ASC')->get();
-        
+
+        if($configData->isEmpty()) {
+            return ['status'=>false, 'msg'=>'Device configuration is not there for this device'];
+        }
         
         $now = Carbon::now();
         DB::beginTransaction();
         try {
             foreach($data['battery_details'] as $battery) {
-                // print_r($configData);
-                // echo $battery['battery_no'].'---';
-                // echo $configData[$battery['battery_no']+1]->charging_thrashold;die;
                 $validate = true;
                 
                 if($battery['battery_no'] < 1 || $battery['battery_no'] > 16 ) {
@@ -111,12 +111,8 @@ class Device extends Model {
                 if($validate && $battery['discharge_status'] !== 0 && $battery['discharge_status'] !== 1) {
                     $validate = false;
                 }
-                // $charging_thrashold = self::getChargingThrashold($configData, $battery['battery_no']);
-                // echo $charging_thrashold.'---';
-                // if($validate && ($battery['battery_voltage'] < 3.2 || $battery['battery_voltage'] > $configData[$battery['battery_no']]->charging_thrashold)) {
-                //     $validate = false;
-                // }
-                if($validate && $battery['battery_voltage'] < 3.2) {
+                $charging_thrashold = self::getChargingThrashold($configData, $battery['battery_no']);
+                if($validate && ($battery['battery_voltage'] < 3.2 || $battery['battery_voltage'] > $charging_thrashold)) {
                     $validate = false;
                 }
 
@@ -157,6 +153,7 @@ class Device extends Model {
             else 
                 return ['status'=>false, 'msg'=>'Could not save data'];
         } catch(\Exception $e) {
+            echo $e;
             DB::rollback();
             return ['status'=>false, 'msg'=>'Could not save data'];
         }
@@ -164,10 +161,22 @@ class Device extends Model {
 
     public static function getChargingThrashold($configData, $batteryNo)
     {
-        $arr = $configData->filter(function ($obj) use ($batteryNo) {
-            return $obj->battery_number == $batteryNo;
-        });
+        $thrashold = 0;
+        if($configData) {
+            $key=array_search($batteryNo, array_column(json_decode(json_encode($configData),TRUE), 'battery_number'));
+            if($configData[$key]) {
+                $thrashold = $configData[$key]->charging_thrashold == '' ? 0 : $configData[$key]->charging_thrashold;
+            }
+        }
+        
+       return $thrashold;
+    }
 
-       return $arr[0]->charging_thrashold;
+    public static function getCustomerDetailsForDashboard()
+    {
+        $customer = DB::table('devices')
+                        ->select(DB::raw('count(distinct(contact_phone)) as total_cust'), DB::raw('select count(id) as month_cust from devices where created_at BETWEEN (CURRENT_DATE() - INTERVAL 1 MONTH) AND CURRENT_DATE()'))
+                        ->get();
+        print_r($customer);die;
     }
 }

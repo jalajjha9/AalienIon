@@ -66,6 +66,8 @@
                             placeholder="Enter unique id"
                             value="{{ old('device_id') }}"
                             required
+                            minLength=10
+                            maxLength=10
                         />
                     </div>
                 </div>
