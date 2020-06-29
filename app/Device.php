@@ -99,6 +99,7 @@ class Device extends Model {
         $now = Carbon::now();
         DB::beginTransaction();
         try {
+            $insertDataArray = [];
             foreach($data['battery_details'] as $battery) {
                 $validate = true;
                 
@@ -117,36 +118,21 @@ class Device extends Model {
                 }
 
                 if($validate) {
-                    $checkUpdate = $checkDevice = DB::table('device_monitoring')->where(['device_id' => $data['device_id'], 'battery_no' => $battery['battery_no']])->first();
-                    if($checkUpdate) {
-                        $batteryCount = 1;
-                        $updateDataArray = [
-                            'battery_pack_temp' => $data['battery_pack_temp'],
-                            'battery_pack_voltage' => $data['battery_pack_voltage'],
-                            'battery_voltage' => $battery['battery_voltage'],
-                            'charge_status' => $battery['charge_status'],
-                            'discharge_status' => $battery['discharge_status'],
-                            'updated_at' => $now
-                        ];
-                        DB::table('device_monitoring')->where('device_id',$data['device_id'])->where('battery_no', $battery['battery_no'])->update($updateDataArray);
-                    } else {
-                        $batteryCount = 1;
-                        $insertDataArray = [
-                            'device_id' => $data['device_id'],
-                            'battery_no' => $battery['battery_no'],
-                            'battery_pack_temp' => $data['battery_pack_temp'],
-                            'battery_pack_voltage' => $data['battery_pack_voltage'],
-                            'battery_voltage' => $battery['battery_voltage'],
-                            'charge_status' => $battery['charge_status'],
-                            'discharge_status' => $battery['discharge_status'],
-                            'created_at' => $now,
-                            'updated_at' => $now
-                        ];
-                        
-                        DB::table('device_monitoring')->insert($insertDataArray);
-                    }
+                    $batteryCount = 1;
+                    $insertDataArray[] = [
+                        'device_id' => $data['device_id'],
+                        'battery_no' => $battery['battery_no'],
+                        'battery_pack_temp' => $data['battery_pack_temp'],
+                        'battery_pack_voltage' => $data['battery_pack_voltage'],
+                        'battery_voltage' => $battery['battery_voltage'],
+                        'charge_status' => $battery['charge_status'],
+                        'discharge_status' => $battery['discharge_status'],
+                        'created_at' => $now,
+                        'updated_at' => $now
+                    ];
                 }
             }
+            DB::table('device_monitoring')->insert($insertDataArray);
             DB::commit();
             if($batteryCount)
                 return ['status'=>true, 'msg'=>''];
@@ -172,11 +158,28 @@ class Device extends Model {
        return $thrashold;
     }
 
-    public static function getCustomerDetailsForDashboard()
+    public static function getDetailsForDashboard()
     {
         $customer = DB::table('devices')
-                        ->select(DB::raw('count(distinct(contact_phone)) as total_cust'), DB::raw('select count(id) as month_cust from devices where created_at BETWEEN (CURRENT_DATE() - INTERVAL 1 MONTH) AND CURRENT_DATE()'))
-                        ->get();
-        print_r($customer);die;
+                        ->select(
+                            DB::raw("count(distinct(contact_phone)) as all_total"), 
+                            DB::raw("(select count(distinct(contact_phone)) from devices where created_at BETWEEN (CURRENT_DATE() - INTERVAL 1 MONTH) AND CURRENT_DATE()) as month_total"));
+                        
+
+        $devices = DB::table('devices')
+                    ->select(
+                        DB::raw("count(id) as all_total"), 
+                        DB::raw("(select count(id) from devices where created_at BETWEEN (CURRENT_DATE() - INTERVAL 1 MONTH) AND CURRENT_DATE()) as month_total"));
+                   
+        $config = DB::table('device_config')
+                    ->select(DB::raw("count(distinct(device_id)) as all_total, '0' as month_total"));
+
+        $monitoring = DB::table('device_monitoring')
+            ->select(DB::raw("count(distinct(device_id)) as all_total, '0' as month_total"));
+
+
+        $resultUnion = $customer->unionAll($devices)->unionAll($config)->unionAll($monitoring);
+        $result = $resultUnion->get();
+        return $result;
     }
 }

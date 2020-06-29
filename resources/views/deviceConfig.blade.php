@@ -15,35 +15,34 @@
         </ol>
     </div>
 
-    <div
-        class="dropdown-menu-right p-3 shadow animated--grow-in"
-        style="width: 40%;margin-bottom: 15px;"
-    >
-        <form class="navbar-search" id="device-config-search">
-            <div class="input-group">
-                <input
-                    type="text"
-                    name="device_id_search"
-                    class="form-control bg-light border-1 small"
-                    placeholder="Enter Device Id to Configure"
-                    style="border-color: #3f51b5;"
-                    minlength="10"
-                    maxlength="10"
-                    id="device_id_search"
-                    required
-                />
-                <div class="input-group-append">
-                    <button
-                        class="btn btn-primary"
-                        type="submit"
-                    >
-                        <i
-                            class="fas fa-search fa-sm"
-                        ></i>
-                    </button>
+    <div class="col-md-6 mx-auto">
+        <div class="dropdown-menu-right p-3 shadow animated--grow-in dashboard-search-bar" style="margin-bottom: 20px">
+            <form class="navbar-search" id="device-config-search">
+                <div class="input-group">
+                    <input
+                        type="text"
+                        name="device_id_search"
+                        class="form-control bg-light border-1 small"
+                        placeholder="Enter Device Id to Configure"
+                        minlength="10"
+                        maxlength="10"
+                        style="border-color: #d1d3e2;"
+                        id="device_id_search"
+                        required
+                    />
+                    <div class="input-group-append">
+                        <button
+                            class="btn btn-primary"
+                            type="submit"
+                        >
+                            <i
+                                class="fas fa-search fa-sm"
+                            ></i>
+                        </button>
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 
     <div

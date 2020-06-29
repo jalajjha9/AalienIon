@@ -25,7 +25,11 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $customerInfo = Device::getCustomerDetailsForDashboard();
-        return view('home');
+        $dashboardInfo = Device::getDetailsForDashboard();
+        //print_r($dashboardInfo);die;
+        $viewArray = [
+            'dashboardInfo' => $dashboardInfo
+        ];
+        return view('home', $viewArray);
     }
 }

@@ -202,3 +202,10 @@
     margin-bottom: 0px;
     font-size: 14px;
 }
+
+.dashboard-search-bar {
+    margin-bottom: 20px;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15) !important;
+    background-color: #ffffff;
+    border-radius: 5px;
+}

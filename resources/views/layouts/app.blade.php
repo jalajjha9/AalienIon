@@ -68,7 +68,7 @@
                 <li class="nav-item active">
                     <a class="nav-link custom-nav-link" href="{{ route('device-onboarding') }}">
                         <i
-                            class="fas fa-fw fa-database"
+                            class="fas fa-fw fa-calendar"
                             style="color: #29B6F6; font-size: 1rem;"
                         ></i>
                         <span>Device Onboarding</span></a>
@@ -77,16 +77,16 @@
                 <li class="nav-item active">
                     <a class="nav-link custom-nav-link" href="{{ route('device-manage') }}">
                         <i
-                            class="fas fa-fw fa-database"
-                            style="color: #29B6F6; font-size: 1rem;"
+                            class="fas fa-fw fa-cog"
+                            style="color: #6777ef; font-size: 1rem;"
                         ></i>
                         <span>Manage Devices</span></a>
                 </li>
                 <li class="nav-item active">
                     <a class="nav-link custom-nav-link" href="{{ route('configuration') }}">
                         <i
-                            class="fas fa-fw fa-database"
-                            style="color: #29B6F6; font-size: 1rem;"
+                            class="fas fa-fw fa-podcast"
+                            style="color: #ffa426; font-size: 1rem;"
                         ></i>
                         <span>Device Configuration</span></a>
                 </li>
