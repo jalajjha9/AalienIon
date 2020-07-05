@@ -6,6 +6,7 @@ use App\Device;
 use Illuminate\Http\Request;
 use Validator;
 use DataTables;
+use Session;
 
 class DeviceController extends Controller
 {
@@ -294,6 +295,33 @@ class DeviceController extends Controller
             echo json_encode($output);
             return; 
         }
+    }
+
+
+    public function getDashboardMonitoringData(Request $request)
+    {
+        $id = $request->get('id', '');
+        $monitoringDetails = Device::getMonitoringDetailsOnId($id);
+        if(!$monitoringDetails->isEmpty()) {
+            $output = $monitoringDetails;
+        } else {
+            $output = '';
+        }
+
+        echo json_encode($output);
+    }
+
+    public function getMonitorDataOnId(Request $request)
+    {
+        $id= $request->get('id', '');
+        $monitorData = Device::getSingleMonitoringDataOnId($id);
+        if(!$monitorData->isEmpty()) {
+            $output = $monitorData;
+        } else {
+            $output = '';
+        }
+
+        echo json_encode($output);
     }
 
 

@@ -22,13 +22,13 @@
 
     <div class="col-lg-12">
         <div class="card mb-4">
-            <div
+            <!-- <div
                 class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
             >
                 <h6 class="m-0 font-weight-bold text-primary">
                     List Of All Devices
                 </h6>
-            </div>
+            </div> -->
             <div class="table-responsive p-3">
                 <table
                     class="table align-items-center table-flush table-hover"
@@ -36,12 +36,12 @@
                 >
                     <thead class="thead-light" style="font-size: 15px;">
                         <tr>
-                            <th style="color: #333333;">Device Id</th>
-                            <th style="color: #333333;">Name</th>
-                            <th style="color: #333333;">Phone No.</th>
-                            <th style="color: #333333;">Date</th>
-                            <th style="color: #333333;">Status</th>
-                            <th style="color: #333333;"></th>
+                            <th style="background-color: #EF5350; border-color: #EF5350;color: #ffffff">Device Id</th>
+                            <th style="background-color: #EF5350; border-color: #EF5350;color: #ffffff">Name</th>
+                            <th style="background-color: #EF5350; border-color: #EF5350;color: #ffffff">Phone No.</th>
+                            <th style="background-color: #EF5350; border-color: #EF5350;color: #ffffff">Date</th>
+                            <th style="background-color: #EF5350; border-color: #EF5350;color: #ffffff">Status</th>
+                            <th style="background-color: #EF5350; border-color: #EF5350;color: #ffffff"></th>
                         </tr>
                     </thead>
                 </table>

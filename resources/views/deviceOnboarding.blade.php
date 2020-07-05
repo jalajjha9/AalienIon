@@ -82,6 +82,7 @@
                         <select
                             class="form-control"
                             name="device_type"
+                            value="{{ old('device_type') }}"
                             id="selectDeviceType"
                             required
                         >
@@ -100,6 +101,7 @@
                         <input
                             type="text"
                             name="contact_name"
+                            value="{{ old('contact_name') }}"
                             class="form-control"
                             id="inputContactName"
                             placeholder="Enter name"
@@ -118,6 +120,7 @@
                         <input
                             type="email"
                             name="contact_email"
+                            value="{{ old('contact_email') }}"
                             class="form-control"
                             id="inputContactEmail"
                             placeholder="Enter email id"
@@ -135,6 +138,7 @@
                         <input
                             type="text"
                             name="contact_phone"
+                            value="{{ old('contact_phone') }}"
                             class="form-control"
                             id="inputContactPhone"
                             placeholder="Enter contact no."
@@ -155,6 +159,7 @@
                         <textarea
                             class="form-control"
                             name="contact_address"
+                            value="{{ old('contact_address') }}"
                             id="inputContactAddress"
                             rows="3"
                             required

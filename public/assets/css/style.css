@@ -209,3 +209,17 @@
     background-color: #ffffff;
     border-radius: 5px;
 }
+
+.monitor-block-text {
+    font-weight: bold;
+    color: #696969;
+}
+
+.monitor-block-p {
+    margin: 0px;
+}
+
+.page-item.active .page-link {
+    background-color: #EF5350;
+    border-color: #EF5350;
+}

@@ -1,6 +1,6 @@
 <?php
-
 namespace App\Http\Controllers;
+ini_set('serialize_precision', -1);
 
 use App\Device;
 use Illuminate\Http\Request;
@@ -21,7 +21,7 @@ class DeviceApiController extends Controller
     public function sendResponse($result, $message)
     {
     	$response = [
-            'status' => true,
+            'status' => 1,
             'data'    => $result,
             'message' => $message,
         ];
@@ -33,7 +33,7 @@ class DeviceApiController extends Controller
     public function sendError($error, $errorMessages = [], $code = 404)
     {
     	$response = [
-            'status' => false,
+            'status' => 0,
             'message' => $error,
         ];
 
@@ -49,16 +49,19 @@ class DeviceApiController extends Controller
     public function getDeviceOnId($id)
     {
         if(!$id) {
-            return $this->sendError('Nothing to display.',[], 200);
+            return $this->sendError('Device id is empty',[], 200);
         }
 
         $devices = Device::getDeviceOnId($id);
-        print_r($devices);
-        if (is_null($devices)) {
-            return $this->sendError('Device info not found.',[], 200);
+        if(!$devices) {
+            return $this->sendError('Device id is incorrect',[], 200);
         }
 
-        return $this->sendResponse($devices->toArray(), 'Device fetched successfully.');
+        if ($devices->isEmpty()) {
+            return $this->sendError('Device is not configured.',[], 200);
+        }
+
+        return $this->sendResponse($devices->toArray(), 'Device configuration fetched successfully.');
     }
 
     public function postDeviceMonitoring(Request $request) 

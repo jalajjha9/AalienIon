@@ -10,7 +10,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}" />
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <title>{{ config("app.name", "Laravel") }}</title>
+        <title>Alien Monitors</title>
         <!-- Fonts -->
         <link rel="dns-prefetch" href="//fonts.gstatic.com" />
         <link

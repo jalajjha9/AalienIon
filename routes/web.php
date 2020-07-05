@@ -34,6 +34,12 @@ Route::get('/device/getAllDevices', 'DeviceController@getAllDevices')->name('get
 Route::get('/device/editDeviceStatus', 'DeviceController@editDeviceStatus')->name('edit-device-status');
 Route::get('/device/configuration/', 'DeviceController@configuration')->name('configuration');
 Route::get('/device/getConfigDevice', 'DeviceController@getConfigDevice')->name('config-device');
+Route::post('/device/getDashboardMonitoringData', 'DeviceController@getDashboardMonitoringData')->name('monitoring-search');
+Route::get('/device/getMonitorDataOnId', 'DeviceController@getMonitorDataOnId')->name('monitor-data-view');
+
+
+
+
 
 
 

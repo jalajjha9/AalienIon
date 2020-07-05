@@ -74,6 +74,11 @@ class Device extends Model {
 
     public static function getDeviceOnId($id)
     {
+        $checkDevice = DB::table('devices')->where('device_id', $id)->first();
+        if(!$checkDevice) {
+            return false;
+        }
+
         $devices = DB::table('device_config')
                         ->select('device_id', 'battery_number', DB::raw('ifnull(charging_thrashold,0) as charging_thrashold'), DB::raw('ifnull(discharge_thrashold,0) as discharge_thrashold'), 'status', 'updated_at')
                         ->where('device_id', $id)
@@ -89,7 +94,6 @@ class Device extends Model {
             return ['status'=>false, 'msg'=>'Device id does not match'];
         }
 
-        $batteryCount = 0;
         $configData = DB::table('device_config')->where(['device_id' => $data['device_id']])->orderBy('battery_number', 'ASC')->get();
 
         if($configData->isEmpty()) {
@@ -97,28 +101,39 @@ class Device extends Model {
         }
         
         $now = Carbon::now();
+        usort($data['battery_details'],function($first, $second){
+            return $first['battery_no'] > $second['battery_no'];
+        });
+
         DB::beginTransaction();
         try {
             $insertDataArray = [];
             foreach($data['battery_details'] as $battery) {
                 $validate = true;
-                
+                $isInsert = true;
+                $chargeStatus = $battery['charge_status'];
+                $dischargeStatus = $battery['discharge_status'];
+                $batteryVoltage = $battery['battery_voltage'];
                 if($battery['battery_no'] < 1 || $battery['battery_no'] > 16 ) {
                     $validate = false;
+                    $isInsert = false;
                 }
-                if($validate && $battery['charge_status'] !== 0 && $battery['charge_status'] !== 1) {
+                if($battery['charge_status'] !== 0 && $battery['charge_status'] !== 1) {
                     $validate = false;
+                    $chargeStatus = NULL;
+                    
                 }
-                if($validate && $battery['discharge_status'] !== 0 && $battery['discharge_status'] !== 1) {
+                if($battery['discharge_status'] !== 0 && $battery['discharge_status'] !== 1) {
                     $validate = false;
+                    $dischargeStatus = NULL;
                 }
                 $charging_thrashold = self::getChargingThrashold($configData, $battery['battery_no']);
                 if($validate && ($battery['battery_voltage'] < 3.2 || $battery['battery_voltage'] > $charging_thrashold)) {
                     $validate = false;
+                    $batteryVoltage = NULL;
                 }
-
+                
                 if($validate) {
-                    $batteryCount = 1;
                     $insertDataArray[] = [
                         'device_id' => $data['device_id'],
                         'battery_no' => $battery['battery_no'],
@@ -130,14 +145,50 @@ class Device extends Model {
                         'created_at' => $now,
                         'updated_at' => $now
                     ];
+                } else if($isInsert) {
+                    $insertDataArray[] = [
+                        'device_id' => $data['device_id'],
+                        'battery_no' => $battery['battery_no'],
+                        'battery_pack_temp' => $data['battery_pack_temp'],
+                        'battery_pack_voltage' => $data['battery_pack_voltage'],
+                        'battery_voltage' => $batteryVoltage,
+                        'charge_status' => $chargeStatus,
+                        'discharge_status' => $dischargeStatus,
+                        'created_at' => $now,
+                        'updated_at' => $now
+                    ];
                 }
             }
+
+            $countArr = count($insertDataArray);
+            if($countArr < 16 && $countArr > 0) {
+                for($k = 1; $k <= 16; $k++) {
+                    $check = array_search($k, array_column($insertDataArray, 'battery_no'));
+                    if($check === false) {
+                        $insertDataArray[] = [
+                            'device_id' => $data['device_id'],
+                            'battery_no' => $k,
+                            'battery_pack_temp' => $data['battery_pack_temp'],
+                            'battery_pack_voltage' => $data['battery_pack_voltage'],
+                            'battery_voltage' => NULL,
+                            'charge_status' => NULL,
+                            'discharge_status' => NULL,
+                            'created_at' => $now,
+                            'updated_at' => $now
+                        ];
+                    }
+                }
+                usort($insertDataArray,function($first, $second){
+                    return $first['battery_no'] > $second['battery_no'];
+                });
+            }
+            
             DB::table('device_monitoring')->insert($insertDataArray);
             DB::commit();
-            if($batteryCount)
+            if($countArr > 0)
                 return ['status'=>true, 'msg'=>''];
             else 
-                return ['status'=>false, 'msg'=>'Could not save data'];
+                return ['status'=>false, 'msg'=>'None of the battery have valid battery id'];
         } catch(\Exception $e) {
             echo $e;
             DB::rollback();
@@ -182,4 +233,25 @@ class Device extends Model {
         $result = $resultUnion->get();
         return $result;
     }
+
+    public static function getMonitoringDetailsOnId($id)
+    {
+        $list = DB::table('device_monitoring')
+                    ->where(['device_id' => $id])
+                    ->orderBy('id', 'DESC')
+                    ->take(160)
+                    ->get();
+
+        return $list;
+    }
+
+    public static function getSingleMonitoringDataOnId($id)
+    {
+        $list = DB::table('device_monitoring')
+                    ->whereBetween('id', array(($id-15), $id))
+                    ->orderBy('id', 'asc')
+                    ->get();
+        return $list;
+    }
+
 }
